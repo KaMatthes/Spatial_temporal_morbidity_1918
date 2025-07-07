@@ -1,2 +1,7 @@
 library(tidyverse)
 library(openxlsx)
+library(spatialreg)
+library(sfdep)
+library(tmap)
+library(tmaptools)
+library(zoo)
