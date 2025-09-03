@@ -1,0 +1,1 @@
+dt <- read.xlsx("data/Faelle_Bezirke_total_pop.xlsx", detectDates = TRUE) 

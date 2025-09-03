@@ -9,7 +9,7 @@ pop1910 <- read.xlsx("data/Population_Age1910.xlsx") %>%
 dt <- read.xlsx("data/Population.xlsx") %>%
   rename(pop_total = pop) %>%
   left_join(pop1910) %>%
-  mutate(pop_age=round(pop_total*prop))
+  mutate(pop_age=round(pop_total*prop)) 
 
 
 write.xlsx(dt,file=paste0("data/pop_age.xlsx"),row.names=FALSE, overwrite = TRUE)

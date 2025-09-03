@@ -56,7 +56,7 @@ dt <- rbind(dt.1918, dt.1919, dt.1920) %>%
     Fallzahl = ifelse(is.na(Fallzahl), 0, Fallzahl)
   ) %>%
   filter(!iso_cw_y %in% c("NA-NA")) %>%
-  droplevels() 
+  droplevels()
 
 
 # sum up Bezirke, 11648
@@ -98,7 +98,7 @@ dt222 <- dt %>%
 
 
 
-# 11649
+# Vergleich Summe Gemeinde mit Bezirk
 dt3 <- dt %>%
   dplyr:: mutate(iso_cw_y = as.factor(iso_cw_y),
                  Gemeindename = as.factor(Gemeindename)) %>%
@@ -131,7 +131,11 @@ dt3 <- dt %>%
          Bezirk = `Bezirks-nummer` ) %>%
   select(-Gemeindename)
 
-         
+t1 <- dt3 %>%
+  mutate(diff = fallzahl_gemeinde_bezirk-Fallzahl,
+         diff = ifelse(diff ==0, "yes", "no"))
+table(t1$diff)
+
 dt.pop <- read_excel_allsheets("data/Population.xlsx") %>%
   do.call(bind_rows, .) %>%
   mutate(Bezirk=as.character(Bezirk)) %>%
@@ -155,17 +159,18 @@ dt.pop <- read_excel_allsheets("data/Population.xlsx") %>%
          pop2 = round(pop_interp, 0)) %>%
   select(year, Bezirk, iso_cw_y, pop=pop2)
 
-# 11649    
+# 11712   
 dt4 <- dt3 %>%
   left_join(dt.pop)
 
-# 7671
+# 7763
 dt4r <- dt4 %>%
   filter(Kanton_bigger ==0) %>%
   select(year, Startdatum, Enddatum, Kanton, Bezirk, Bezirksname,iso_cw_y,Cases_Bezirk, pop)
 
 # Alle Fälle Cases_Kanton mehr sind, das heisst zu wenig in Cases_Bezirk
 
+# Gemeinde eg
 dt5 <- dt4 %>%
   filter(Kanton_bigger ==1) %>%
   group_by(Kanton,iso_cw_y) %>%
@@ -184,11 +189,32 @@ dt5 <- dt4 %>%
   mutate(Cases_used = sum(Cases_Bezirk_new)) %>%
   ungroup()
 
+
+t2 <- dt5 %>%
+  mutate(diff =  Cases_Bezirk-Cases_prop,
+         diff2 = ifelse(diff >0, "yes", "no"),
+         prop_diff = 1-(Cases_Bezirk/Cases_prop),
+         cases0 = ifelse(Cases_Bezirk ==0, "yes", "no"))
+table(t2$diff2)
+table(t2$diff2)
+
+t3 <- t2 %>%
+  filter(diff2 %in% "no") 
+table(t3$cases0)
+
+t4 <- t3 %>%
+  filter(cases0=="no")
+
+t5 <- t3 %>%
+  filter(cases0=="yes")
+
+mean(t3$prop_diff)
+
 a <- dt5 %>%
   filter(Bezirk=="111") %>%
   filter(iso_cw_y=="1918-27")
 
-#  Cases_Bezirk_new1278
+#  Cases_Bezirk_new 1278
 dt5r <- dt5 %>%
   filter( Cases_Bezirk_new_bigger ==0) %>%
   select(year, Startdatum, Enddatum, Kanton, Bezirk, Bezirksname,iso_cw_y,Cases_Bezirk= Cases_Bezirk_new,pop)
@@ -203,7 +229,7 @@ dt7 <- dt5%>%
   select(-Cases_used ) %>%
   left_join(dt6) 
 
-# Cases_Bezirk_new 499
+# Cases_Bezirk_new 504
 dt8r <- dt7 %>%
   filter(is.na(Cases_used))  %>%
   select(year, Startdatum, Enddatum, Kanton, Bezirk, Bezirksname,iso_cw_y,Cases_Bezirk= Cases_Bezirk_new,pop)
@@ -322,15 +348,14 @@ dt4t <- dt4%>%
 dt_all <- rbind(dt4r, dt5r,dt8r,dt9r,dt12r,dt13r,dt16r,dt17r) %>%
   mutate(
     mx = Cases_Bezirk/pop,
-    inzidenze = mx*10000,
+    incidence = mx*10000,
     wave = case_when(Enddatum <=ymd("1918-08-31") ~  1,
                      Enddatum >=ymd("1918-09-01") & Enddatum <=ymd("1919-12-31")~2,
                      # Enddatum >=ymd("1919-01-01") & Enddatum <=ymd("1919-04-30")~3,
-                     Enddatum >=ymd("1920-01-01") & Enddatum <=ymd("1920-04-30")~3)
+                     Enddatum >=ymd("1920-01-01") & Enddatum <=ymd("1920-05-30")~3)
   )
 
 write.xlsx( dt_all ,"data/Faelle_Bezirke_total_pop.xlsx", row.names=FALSE, overwrite = TRUE)
-
 
 dt.pop.y <- read_excel_allsheets("data/Population.xlsx") %>%
   do.call(bind_rows, .) %>%
@@ -341,14 +366,16 @@ dt.pop.y <- read_excel_allsheets("data/Population.xlsx") %>%
 
 dt_year <- dt_all %>%
 group_by(year, Bezirk, Bezirksname) %>%
-  summarise(
+  mutate(
     Cases_Bezirk_year = sum(Cases_Bezirk)
     ) %>%
   ungroup() %>%
+  select(year, Kanton, Bezirk, Bezirksname, Cases_Bezirk_year) %>%
+  distinct(year, Bezirk, Bezirksname, .keep_all = TRUE) %>%
   left_join(dt.pop.y) %>%
   mutate(
     mx = Cases_Bezirk_year/pop,
-    inzidenze = mx*10000
+    incidence = mx*10000
   )
 
 write.xlsx( dt_year ,"data/Faelle_Bezirke_total_pop_year.xlsx", row.names=FALSE, overwrite = TRUE)
@@ -359,18 +386,44 @@ dt_wave <- dt_all %>%
     Cases_Bezirk_wave = sum(Cases_Bezirk)
   ) %>%
   ungroup() %>%
-  distinct(year, wave, Bezirk, Bezirksname,   Cases_Bezirk_wave) %>%
+  select(year,wave, Kanton, Bezirk, Bezirksname, Cases_Bezirk_wave) %>%
+  distinct(wave, Bezirk, Bezirksname,   Cases_Bezirk_wave,.keep_all = TRUE) %>%
   left_join(dt.pop.y) %>%
   mutate(
     mx = Cases_Bezirk_wave/pop,
-    inzidenze = mx*10000
+    incidence = mx*10000
   ) 
 
 write.xlsx( dt_wave ,"data/Faelle_Bezirke_total_pop_wave.xlsx", row.names=FALSE, overwrite = TRUE)
 
 dt_max <- dt_all %>%
   group_by(wave, Bezirk) %>%
-  slice_max(., order_by= Cases_Bezirk)  %>%
-  ungroup()
+  slice_max(., order_by= incidence)  %>%
+  mutate(
+    incidence= ifelse(incidence==0, NA, incidence)
+  )
+
 
 write.xlsx( dt_max ,"data/Faelle_Bezirke_total_pop_zeitreihe.xlsx", row.names=FALSE, overwrite = TRUE)
+
+
+
+
+a <- dt %>%
+  select(Bezirk =`Bezirks-nummer`,Fallzahl,iso_cw_y) %>%
+  distinct(Bezirk ,iso_cw_y, .keep_all = TRUE)
+
+b <- dt_all %>%
+  select( Bezirk,iso_cw_y, Cases_Bezirk)
+
+# ab <- a %>%
+#   full_join(b) %>%
+#   mutate(Cases_Bezirk = as.integer(Cases_Bezirk)) %>%
+#   filter(!is.na(Bezirk)) %>%
+#   mutate(diff_cas = Fallzahl-Cases_Bezirk,
+#          diff_yes = ifelse(diff_cas ==0, 1, 0))
+#          
+  
+dtt1 <- dt_all %>%
+  full_join(dt3) %>%
+  mutate(diff = Cases_Bezirk - Fallzahl_Kanton)
