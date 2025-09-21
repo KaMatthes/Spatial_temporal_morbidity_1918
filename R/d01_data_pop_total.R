@@ -61,11 +61,15 @@ dt <- rbind(dt.1918, dt.1919, dt.1920) %>%
 
 # sum up Bezirke, 11648
 dt2 <- dt %>%
-  dplyr:: mutate(iso_cw_y = as.factor(iso_cw_y),
-                 Gemeindename = as.factor(Gemeindename)) %>%
+  mutate(
+    iso_cw_y = as.factor(iso_cw_y),
+                 Gemeindename = as.factor(Gemeindename)
+    ) %>%
                  # Bezirksname = ifelse(is.na(Bezirksname), "Appenzell-Innerrhoden",Bezirksname ),
                  # `Bezirks-nummer` =ifelse(is.na(`Bezirks-nummer`), 1600, `Bezirks-nummer`)) %>%
-  dplyr::filter(Gemeindename %in% c( "Bezirk")) %>%
+  filter(
+    Gemeindename %in% c( "Bezirk")
+         ) %>%
   group_by(Bezirksname,iso_cw_y,`Bezirks-nummer`) %>%
   summarise(Fallzahl_Bezirk = sum(Fallzahl)) %>%
   ungroup() %>%
@@ -76,22 +80,29 @@ dt2 <- dt %>%
 
  # 1600
 dt22 <- dt %>%
-  dplyr:: mutate(iso_cw_y = as.factor(iso_cw_y),
-                 Gemeindename = as.factor(Gemeindename)) %>%
+  mutate(iso_cw_y = as.factor(iso_cw_y),
+                 Gemeindename = as.factor(Gemeindename)
+         ) %>%
   # Bezirksname = ifelse(is.na(Bezirksname), "Appenzell-Innerrhoden",Bezirksname ),
   # `Bezirks-nummer` =ifelse(is.na(`Bezirks-nummer`), 1600, `Bezirks-nummer`)) %>%
-  dplyr::filter(Gemeindename %in% c( "Kanton")) %>%
+  filter(
+    Gemeindename %in% c( "Kanton")
+    ) %>%
   group_by(Kanton,iso_cw_y) %>%
   summarise(Fallzahl_Kanton = sum(Fallzahl))
 
 
 #  1536
 dt222 <- dt %>%
-  dplyr:: mutate(iso_cw_y = as.factor(iso_cw_y),
-                 Gemeindename = as.factor(Gemeindename)) %>%
+  mutate(
+    iso_cw_y = as.factor(iso_cw_y),
+                 Gemeindename = as.factor(Gemeindename)
+    ) %>%
   # Bezirksname = ifelse(is.na(Bezirksname), "Appenzell-Innerrhoden",Bezirksname ),
   # `Bezirks-nummer` =ifelse(is.na(`Bezirks-nummer`), 1600, `Bezirks-nummer`)) %>%
-  dplyr::filter(Gemeindename %in% c( "Bezirk")) %>%
+  filter(
+    Gemeindename %in% c( "Bezirk")
+         ) %>%
   group_by(Kanton,iso_cw_y) %>%
   summarise(Fallzahl_Bezirk_Kantone = sum(Fallzahl)) %>%
   ungroup()
@@ -100,14 +111,22 @@ dt222 <- dt %>%
 
 # Vergleich Summe Gemeinde mit Bezirk
 dt3 <- dt %>%
-  dplyr:: mutate(iso_cw_y = as.factor(iso_cw_y),
-                 Gemeindename = as.factor(Gemeindename)) %>%
-  dplyr::filter(!Gemeindename %in% c("Kanton", "Bezirk")) %>%
-  dplyr::group_by( `Bezirks-nummer`,iso_cw_y) %>%
-  mutate(fallzahl_gemeinde_bezirk = sum(Fallzahl)) %>%
+  mutate(
+    iso_cw_y = as.factor(iso_cw_y),
+                 Gemeindename = as.factor(Gemeindename)
+    ) %>%
+  filter(
+    !Gemeindename %in% c("Kanton", "Bezirk")
+                ) %>%
+  group_by( `Bezirks-nummer`,iso_cw_y) %>%
+  mutate(
+    fallzahl_gemeinde_bezirk = sum(Fallzahl)
+    ) %>%
   ungroup() %>%
-  dplyr::group_by(Kanton,iso_cw_y) %>%
-  mutate(fallzahl_gemeinde_kanton = sum(Fallzahl)) %>%
+  group_by(Kanton,iso_cw_y) %>%
+  mutate(
+    fallzahl_gemeinde_kanton = sum(Fallzahl)
+    ) %>%
   ungroup() %>%
   distinct( `Bezirks-nummer`,iso_cw_y, .keep_all = TRUE) %>%
   left_join(dt22) %>%
@@ -132,8 +151,10 @@ dt3 <- dt %>%
   select(-Gemeindename)
 
 t1 <- dt3 %>%
-  mutate(diff = fallzahl_gemeinde_bezirk-Fallzahl,
-         diff = ifelse(diff ==0, "yes", "no"))
+  mutate(
+    diff = fallzahl_gemeinde_bezirk-Fallzahl,
+    diff = ifelse(diff ==0, "yes", "no")
+    )
 table(t1$diff)
 
 dt.pop <- read_excel_allsheets("data/Population.xlsx") %>%
@@ -395,6 +416,25 @@ dt_wave <- dt_all %>%
   ) 
 
 write.xlsx( dt_wave ,"data/Faelle_Bezirke_total_pop_wave.xlsx", row.names=FALSE, overwrite = TRUE)
+
+dt_month <- dt_all %>%
+  mutate(
+    month_year= paste0(year, "-", month(Enddatum))
+  ) %>%
+  group_by(month_year, Bezirk, Bezirksname) %>%
+  mutate(
+    Cases_Bezirk_month = sum(Cases_Bezirk)
+  ) %>%
+  ungroup() %>%
+  select(year,month_year, Kanton, Bezirk, Bezirksname, Cases_Bezirk_month) %>%
+  distinct(month_year, Bezirk, Bezirksname,   Cases_Bezirk_month,.keep_all = TRUE) %>%
+  left_join(dt.pop.y) %>%
+  mutate(
+    mx = Cases_Bezirk_month/pop,
+    incidence = mx*10000
+  ) 
+
+write.xlsx( dt_month ,"data/Faelle_Bezirke_total_pop_month.xlsx", row.names=FALSE, overwrite = TRUE)
 
 dt_max <- dt_all %>%
   group_by(wave, Bezirk) %>%
