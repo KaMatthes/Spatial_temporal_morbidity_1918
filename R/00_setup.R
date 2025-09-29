@@ -6,12 +6,16 @@ library(tmap)
 library(tmaptools)
 library(zoo)
 library(sp)
+library(sf)
 library(spdep)
+library(spgwr)
 library(spatialreg)
 library(mgcv)
 library(conflicted)
 library(scales)
 library(MASS)
+
+
 
 conflict_prefer("select", "dplyr")
 conflict_prefer("mutate", "dplyr")

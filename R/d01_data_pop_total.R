@@ -419,14 +419,15 @@ write.xlsx( dt_wave ,"data/Faelle_Bezirke_total_pop_wave.xlsx", row.names=FALSE,
 
 dt_month <- dt_all %>%
   mutate(
-    month_year= paste0(year, "-", month(Enddatum))
-  ) %>%
+    month_year= paste0(year, "-", month(Enddatum)),
+    month_= month(Enddatum)
+) %>%
   group_by(month_year, Bezirk, Bezirksname) %>%
   mutate(
     Cases_Bezirk_month = sum(Cases_Bezirk)
   ) %>%
   ungroup() %>%
-  select(year,month_year, Kanton, Bezirk, Bezirksname, Cases_Bezirk_month) %>%
+  select(year,month_,month_year, Kanton, Bezirk, Bezirksname, Cases_Bezirk_month) %>%
   distinct(month_year, Bezirk, Bezirksname,   Cases_Bezirk_month,.keep_all = TRUE) %>%
   left_join(dt.pop.y) %>%
   mutate(
