@@ -15,15 +15,15 @@ pd <-position_dodge(width=0.5)
 fatten_size <- 12
 
 
-dt1 <- read.xlsx("output/Regression_rlm_zscore_1918.xlsx") %>%
+dt1 <- read.xlsx("output/Regression_rlm_zscore_1918_2.xlsx") %>%
   mutate(fac="Incidence")
 
-dt2 <- read.xlsx("output/Regression_rlm_excess_scale.xlsx") %>%
+dt2 <- read.xlsx("output/Regression_rlm_excess_scale2.xlsx") %>%
   mutate(fac="Excess Mortality")
 
 dt <- rbind(dt1, dt2) %>%
   filter(!Cofactor %in% c("hospitals","Hospitals per 10'000","Doctors per 10'000","Hospital doctors per 10'000", "Incidence")) %>%
-  mutate(Cofactor=factor(Cofactor, levels = c("Tuberculosis mortality","Share of >=60 year-olds","Share of 20-40 year-olds","Share of 5-14 year-olds",
+  mutate(Cofactor=factor(Cofactor, levels = c("Tuberculosis mortality","Share of >=60 year-olds","Share of 20-39 year-olds","Share of 5-14 year-olds",
                                               "Share of men","Households per house","Household size",
                                               "GDP","Share industry","Private doctors per 10'000",
                                               "Population density","Urbanicity (Ref: Rural)")),
@@ -36,7 +36,7 @@ ggplot(dt, aes(x=Cofactor,ymin=Cl, ymax=Cu,y=est, col=fac),position=pd) +
   geom_hline(yintercept=0, colour="grey", lwd=lwd_size ) + 
   geom_pointrange(lwd=3,position=pd, fatten=fatten_size,lwd=lwd_size) +
   xlab("") +
-  ylab("Regression coefficients of z-scores and 95% CI") +
+  ylab("Regression coefficients of z-values and 95% CI") +
 
 scale_color_manual("",
                    # values= c("grey30","grey60"),
@@ -67,4 +67,4 @@ scale_color_manual("",
 
 
 
-ggsave("figures/Figure_excess1918_regression2.png",h=15,w=18)
+ggsave("figures/Figure_excess1918_regression3.png",h=15,w=18)

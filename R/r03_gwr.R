@@ -3,7 +3,7 @@ dt <- read.xlsx("data/Faelle_Bezirke_total_pop_wave.xlsx") %>%
     Bezirk = as.numeric(Bezirk),
   ) %>%
   filter(!Kanton %in% c("AI")) %>%
-  filter(wave==2)
+  filter(wave==1)
 
 # dt <- read.xlsx("data/Faelle_Bezirke_total_20_40_wave.xlsx") %>%
 #   mutate(
@@ -82,48 +82,78 @@ ds <- read_sf("data/Polygonbasis_183/Polygonbasis_183_eli.shp") %>%
     hosp_pop_n = normalit( hosp_pop),
     docs_pop = docs/pop*10000,
     docs_pop_n= normalit(docs_pop),
+    docs_pop_s= scale(docs_pop),
     docs_p_pop= Doc_privat/pop*10000,
     docs_p_pop_n= normalit(docs_p_pop),
+    docs_p_pop_s= scale(docs_p_pop),
     docs_s_pop= Doc_spital/pop*10000,
     docs_s_pop_n= normalit(docs_s_pop),
+    docs_s_pop_s= scale(docs_s_pop),
     propmale_n= normalit(propmale),
+    propmale_s= scale(propmale),
     propkids_n= normalit(propkids),
+    propkids_s= scale(propkids),
     prop20_n= normalit(prop20),
+    prop20_s= scale(prop20),
     prop60_n= normalit(prop60),
+    prop60_s= scale(prop60),
     In_prop = 100-LW_prop,
     LW_prop_n= normalit(LW_prop),
     In_prop_n= normalit(In_prop),
-    GDP_n= normalit(GDP),
+    In_prop_s= scale(In_prop),
+    GDP_n = normalit(GDP),
+    GDP_s = scale(GDP),
     densPop_n= normalit(densPop),
+    densPop_s= scale(densPop),
     tb_d_pop = TB_death/pop*10000,
     tb_d_pop_n = normalit(tb_d_pop),
+    tb_d_pop_s = scale(tb_d_pop),
     Haushalte.pro.Haus_n =normalit(Haushalte.pro.Haus),
+    Haushalte.pro.Haus_s =scale(Haushalte.pro.Haus),
     person.pro.Haushalt_n =normalit(person.pro.Haushalt),
+    person.pro.Haushalt_s = scale(person.pro.Haushalt),
     incidence_s = scale(incidence),
     incidence_n= normalit(incidence)
   ) %>%
   as(. , "Spatial")
 
+dp <- read_sf("data/Polygonbasis_183/Polygonbasis_183_eli.shp") %>%
+  filter(!BEZNR %in% 1600)
+
+gnb <- poly2nb(dp)
+glw  <- nb2listw(gnb)
+# apply Moran Test (UNBIASED)
+lm.mod <- lm(incidence_n~  densPop, data=ds)
+moralm <- lm.morantest(lm.mod, listw=glw)
+ds$resid_lm <- residuals(lm.mod)
 
 
+tm_shape(gwr.mod$SDF) +
+  tm_fill(
+    "residual",
+    palette="-RdBu",
+    style = "fixed",
+    midpoint = 0,
+    breaks = all_breaks ) +
+  tm_layout(legend.position = c("right","top"),  title = "GWR") 
 
-bw <- bw.gwr(formula =incidence_n~  docs_pop_n,
-             approach = "CV",
+bw <- bw.gwr(formula =incidence_s~ propkids_s,
+             approach = "AICc",
              kernel="gaussian",
              adaptive = T, 
              data = ds) 
 
-gwr.mod <- gwr.basic(formula =incidence_n~ docs_pop_n,
+gwr.mod <- gwr.robust(formula =incidence_s~ propkids_s,
                      adaptive = T,
                      data = ds, 
                      bw = bw) 
 
 
+mora <- moran.test(gwr.mod$SDF$residual, listw=glw)
 
 vals <- gwr.mod$SDF@data %>%
   select(2)  %>%
   as.matrix()
-
 
 # 1. Split values into negatives and positives
 neg_vals <- vals[vals < 0]
@@ -136,11 +166,9 @@ pos_breaks <- classIntervals(pos_vals, n = 2, style = "jenks")$brks
 # 3. Combine, making sure 0 is included
 all_breaks <- c(neg_breaks,0,pos_breaks)
 
-
-
 tm_shape(gwr.mod$SDF) +
   tm_fill(
-    "docs_pop_n",
+    "propkids_s",
     palette="-RdBu",
     style = "fixed",
     midpoint = 0,
@@ -150,20 +178,37 @@ tm_shape(gwr.mod$SDF) +
   tm_borders(col = "black", lwd = 0.5) 
 
 
+tm_shape(gwr.mod$SDF) +
+  tm_fill(
+    "propkids_s",
+    palette="-RdBu",
+    style = "cont",
+    midpoint = 0) +
+  tm_layout(legend.position = c("right","top"),  title = "GWR") +
+  # now add the t-values layer
+  tm_borders(col = "black", lwd = 0.5) 
 # 
-# tm_shape(gwr.mod$SDF) +
+# dss <- gwr.mod$SDF@data %>%
+#   select(2,9) %>%
+#   mutate(Cl =  propmale- 1.96 * propmale_SE,
+#          Cu = propmale+ 1.96 * propmale_SE,
+#          sig = ifelse(Cl <0 & Cu > 0, "no", "yes"))
+# 
+# a <- gwr.mod$SDF %>%
+#   cbind(dss)
+# 
+# tm_shape(a) +
 #   tm_fill(
-#     "person.pro.Haushalt_n",
-#     palette="-RdBu",
-#     style = "jenks",
-#     midpoint = 0,
-#     breaks = all_breaks ) +
-#   tm_layout(legend.position = c("right","top"),  title = "GWR") +
-#   # now add the t-values layer
-#   tm_borders(col = "black", lwd = 0.5)
+#     "sig")
 
 
-
+  #   palette="-RdBu",
+  #   style = "fixed",
+  #   midpoint = 0,
+  #   breaks = all_breaks ) +
+  # tm_layout(legend.position = c("right","top"),  title = "GWR") +
+  # # now add the t-values layer
+  # tm_borders(col = "black", lwd = 0.5) 
 
 bootstrap_gwr_coef <- function(coef_vector, n_boot = 1000, conf = 0.95, seed = NULL) {
   if (!is.null(seed)) set.seed(seed)

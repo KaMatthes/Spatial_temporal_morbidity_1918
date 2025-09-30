@@ -8,12 +8,13 @@ library(zoo)
 library(sp)
 library(sf)
 library(spdep)
-library(spgwr)
+library(GWmodel) 
 library(spatialreg)
 library(mgcv)
 library(conflicted)
 library(scales)
 library(MASS)
+library(classInt )
 
 
 
