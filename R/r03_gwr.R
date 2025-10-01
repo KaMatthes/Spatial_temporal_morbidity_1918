@@ -3,7 +3,7 @@ dt <- read.xlsx("data/Faelle_Bezirke_total_pop_wave.xlsx") %>%
     Bezirk = as.numeric(Bezirk),
   ) %>%
   filter(!Kanton %in% c("AI")) %>%
-  filter(wave==1)
+  filter(wave==3)
 
 # dt <- read.xlsx("data/Faelle_Bezirke_total_20_40_wave.xlsx") %>%
 #   mutate(
@@ -140,8 +140,9 @@ tm_shape(gwr.mod$SDF) +
 bw <- bw.gwr(formula =incidence_s~ propkids_s,
              approach = "AICc",
              kernel="gaussian",
-             adaptive = T, 
+             adaptive= T,
              data = ds) 
+
 
 gwr.mod <- gwr.robust(formula =incidence_s~ propkids_s,
                      adaptive = T,

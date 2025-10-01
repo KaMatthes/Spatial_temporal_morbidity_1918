@@ -204,7 +204,7 @@ w1 <- rbind(w11, w12, w13, w14, w15, w17, w19,w121,w122, w123,w124,w125,w126,w12
                          "densPop_s" = "Population density",
                          "propkids_s" = "Share of 5-14 year-olds",
                          "prop60_s" = "Share of >=60 year-olds",
-                         "prop20_s" = "Share of 20-40 year-olds",
+                         "prop20_s" = "Share of 20-39 year-olds",
                          "propmale_s" = "Share of men",
                          "In_prop_s" = "Share industry",
                          "tb_d_pop_s" = "Tuberculosis mortality",
