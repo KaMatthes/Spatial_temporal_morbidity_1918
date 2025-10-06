@@ -80,6 +80,7 @@ ds <- read_sf("data/Polygonbasis_183/Polygonbasis_183_eli.shp") %>%
   mutate(
     hosp_pop = hospitals/pop*10000,
     hosp_pop_n = normalit( hosp_pop),
+    hosp_pop_s = scale( hosp_pop),
     docs_pop = docs/pop*10000,
     docs_pop_n= normalit(docs_pop),
     docs_pop_s= scale(docs_pop),
@@ -123,28 +124,21 @@ dp <- read_sf("data/Polygonbasis_183/Polygonbasis_183_eli.shp") %>%
 gnb <- poly2nb(dp)
 glw  <- nb2listw(gnb)
 # apply Moran Test (UNBIASED)
-lm.mod <- lm(incidence_n~  densPop, data=ds)
+lm.mod <- lm(incidence_s~  prop60_s, data=ds)
+summary(lm.mod)
 moralm <- lm.morantest(lm.mod, listw=glw)
 ds$resid_lm <- residuals(lm.mod)
 
 
-tm_shape(gwr.mod$SDF) +
-  tm_fill(
-    "residual",
-    palette="-RdBu",
-    style = "fixed",
-    midpoint = 0,
-    breaks = all_breaks ) +
-  tm_layout(legend.position = c("right","top"),  title = "GWR") 
 
-bw <- bw.gwr(formula =incidence_s~ propkids_s,
+bw <- bw.gwr(formula =incidence_s~ prop60_s,
              approach = "AICc",
              kernel="gaussian",
              adaptive= T,
              data = ds) 
 
 
-gwr.mod <- gwr.robust(formula =incidence_s~ propkids_s,
+gwr.mod <- gwr.robust(formula =incidence_s~ prop60_s,
                      adaptive = T,
                      data = ds, 
                      bw = bw) 
@@ -157,31 +151,31 @@ vals <- gwr.mod$SDF@data %>%
   as.matrix()
 
 # 1. Split values into negatives and positives
-neg_vals <- vals[vals < 0]
-pos_vals <- vals[vals > 0]
+# neg_vals <- vals[vals < 0]
+# pos_vals <- vals[vals > 0]
+# 
+# # 2. Run Jenks separately
+# neg_breaks <- classIntervals(neg_vals, n = 2, style = "jenks")$brks
+# pos_breaks <- classIntervals(pos_vals, n = 2, style = "jenks")$brks
+# 
+# # 3. Combine, making sure 0 is included
+# all_breaks <- c(neg_breaks,0,pos_breaks)
+# 
+# tm_shape(gwr.mod$SDF) +
+#   tm_fill(
+#     "propkids_s",
+#     palette="-RdBu",
+#     style = "fixed",
+#     midpoint = 0,
+#     breaks = all_breaks ) +
+#   tm_layout(legend.position = c("right","top"),  title = "GWR") +
+#   # now add the t-values layer
+#   tm_borders(col = "black", lwd = 0.5) 
 
-# 2. Run Jenks separately
-neg_breaks <- classIntervals(neg_vals, n = 2, style = "jenks")$brks
-pos_breaks <- classIntervals(pos_vals, n = 2, style = "jenks")$brks
-
-# 3. Combine, making sure 0 is included
-all_breaks <- c(neg_breaks,0,pos_breaks)
 
 tm_shape(gwr.mod$SDF) +
   tm_fill(
-    "propkids_s",
-    palette="-RdBu",
-    style = "fixed",
-    midpoint = 0,
-    breaks = all_breaks ) +
-  tm_layout(legend.position = c("right","top"),  title = "GWR") +
-  # now add the t-values layer
-  tm_borders(col = "black", lwd = 0.5) 
-
-
-tm_shape(gwr.mod$SDF) +
-  tm_fill(
-    "propkids_s",
+    "prop60_s",
     palette="-RdBu",
     style = "cont",
     midpoint = 0) +
