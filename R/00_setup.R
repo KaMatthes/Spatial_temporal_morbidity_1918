@@ -15,7 +15,8 @@ library(conflicted)
 library(scales)
 library(MASS)
 library(classInt )
-
+library(boot)
+library(cowplot)
 
 
 conflict_prefer("select", "dplyr")
