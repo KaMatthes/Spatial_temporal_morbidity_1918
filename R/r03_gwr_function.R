@@ -2,12 +2,12 @@ lwd_size <- 1.2
 lwd_size_vline <- 0.8
 text_size <- 25
 text_size_heat_map <- 15
-legend_size <- 25
+legend_size <- 30
 axis_legend_size <- 30
 axis_legend_size_heat_map <- 15
 title_size <- 20
 
-size_axis<- 25
+size_axis <- 30
 size_axis_title <- 15
 pd <-position_dodge(width=0.5)
 fatten_size <- 8
@@ -149,7 +149,8 @@ ds <- read_sf("data/Polygonbasis_183/Polygonbasis_183_eli.shp") %>%
                        "1" = "Jul 1918 - Aug 1918",
                        "2" = "Sep 1918 - Mai 1919",
                        "3" = "Jan 1920 - Mai 1920")
-  )
+  ) %>%
+  filter(!Cofac_name %in% c("Urbanicity","Tuberculosis mortality per 10’000"))
 
 dp <- read_sf("data/Polygonbasis_183/Polygonbasis_183_eli.shp") 
 # %>%
@@ -267,10 +268,46 @@ for( w in unique(ds$wave_name)) {
 }
 
 
-dtt<- do.call(rbind,dat.a)
+dtt<- do.call(rbind,dat.a) %>%
+  mutate(Cofacter = factor(Cofactor, 
+                           levels = c("Population density",
+                                      "GDP per capita",
+                                      "Share of industry",
+                                      "Private physicians per km2",
+                                      "Household size",
+                                      "Households per house",
+                                      "Share of men",
+                                      "Share of 5-14 years old",
+                                      "Share of 20-39 years old" ,
+                                      "Share of >= 60 years old")),
+         Cofacter = factor(Cofactor, 
+                            levels = c("Jul 1918 - Aug 1918",
+                                       "Sep 1918 - Mai 1919",
+                                       "Jan 1920 - Mai 1920"))
+         )
+         
 write.xlsx(dtt, "output/gwr_results_inc.xlsx")
 
-ggplot(dtt, aes(x=Cofactor,ymin=Clb, ymax=Cub,y= Coef, col=wave),position=pd) + 
+
+ggplot(dtt, aes(x=factor(Cofactor, 
+                         levels = c( "Share of >= 60 years old",
+                                     "Share of 20-39 years old" ,
+                                     "Share of 5-14 years old",
+                                     "Share of men",
+                                     "Household size",
+                                     "Households per house",
+                                     "Private physicians per km2",
+                                     "Share of industry",
+                                     "GDP per capita",
+                                     "Population density")),
+                ymin=Clb, 
+                ymax=Cub,
+                y= Coef, 
+                col=factor(wave, 
+                           levels = c( "Jan 1920 - Mai 1920",
+                                       "Sep 1918 - Mai 1919",
+                                       "Jul 1918 - Aug 1918"))),
+                position=pd) + 
   geom_hline(yintercept=0, colour="grey", lwd=lwd_size ) + 
   geom_pointrange(lwd=3,position=pd, fatten=fatten_size,lwd=lwd_size) +
   xlab("") +
@@ -280,24 +317,16 @@ ggplot(dtt, aes(x=Cofactor,ymin=Clb, ymax=Cub,y= Coef, col=wave),position=pd) +
                      # values= c("grey30","grey60"),
                      guide = guide_legend(reverse = TRUE),
                      values= c(cbp1[3],cbp1[2],cbp1[1]))+
-  # scale_y_continuous(trans = "log10") + 
-  # guides(linetype = guide_legend(override.aes = list(size = 50)))+
-  # ggtitle("2020")+
-  # scale_color_manual(" ",
-  #                    breaks=c("age_group>=40","age_group<40"),
-  #                    labels=c("Age >=40 (Ref)","Age <40"),
-  #                    values = c(mypalette7[3],mypalette7[2]))+
-  # theme_bw(base_family = "Georgia")+
   theme_bw()+
   theme(
     text = element_text(family = "serif", colour ="black"),
-    axis.text.y = element_text(size=text_size),
+    axis.text.y = element_text(size=size_axis),
     panel.grid.major.x = element_blank(),
     panel.grid.minor.x = element_blank(),
-    strip.text = element_text(size = text_size),
+    strip.text = element_text(size = size_axis),
     legend.position = "bottom",
     legend.text=element_text(size=legend_size),
-    axis.text.x = element_text(size=size_axis_x,hjust=1),
+    axis.text.x = element_text(size=size_axis,hjust=1),
     axis.title = element_text(size=axis_legend_size),
     title =element_text(size=title_size))+
   coord_flip()
