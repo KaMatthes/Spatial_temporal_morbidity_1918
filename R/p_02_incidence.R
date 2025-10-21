@@ -14,7 +14,6 @@ size_axis_title <- 15
 pd <-position_dodge(width=0.5)
 fatten_size <- 12
 
-
 dt <- read.xlsx("data/Faelle_Bezirke_total_pop.xlsx", detectDates = TRUE) %>%
   group_by(Kanton,Startdatum) %>%
   mutate(
