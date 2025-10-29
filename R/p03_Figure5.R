@@ -9,7 +9,7 @@ title_size <- 20
 
 size_axis <- 30
 size_axis_title <- 15
-pd <-position_dodge(width=0.5)
+pd <-position_dodge(width=0.3)
 fatten_size <- 8
 
 
@@ -57,7 +57,7 @@ ggplot(dt, aes(x=factor(Cofactor,
 scale_color_manual("",
                    # values= c("grey30","grey60"),
                    guide = guide_legend(reverse = TRUE),
-                   values= c(cbp1[3],cbp1[2]))+
+                   values= col2)+
   # scale_y_continuous(trans = "log10") + 
   # guides(linetype = guide_legend(override.aes = list(size = 50)))+
   # ggtitle("2020")+

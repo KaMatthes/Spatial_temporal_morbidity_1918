@@ -320,7 +320,7 @@ ggplot(dtt, aes(x=factor(Cofactor,
   scale_color_manual("",
                      # values= c("grey30","grey60"),
                      guide = guide_legend(reverse = TRUE),
-                     values= c(cbp1[3],cbp1[2],cbp1[1]))+
+                     values= col_c)+
   theme_bw()+
   theme(
     text = element_text(family = "serif", colour ="black"),
@@ -485,7 +485,7 @@ map2 <- ggarrange(plot21, plot22,
                   align = 'h')
 
 
-text2 <- "September 1918 - May 1918"
+text2 <- "September 1918 - May 1919"
 
 # Create a text grob
 tgrob <- text_grob(text2,size = 40, family = "serif")
@@ -513,7 +513,7 @@ plot38 <- function_gwr_plot(w="Jan 1920 - Mai 1920", v=  "Share of 5-14 years ol
 plot39 <- function_gwr_plot(w="Jan 1920 - Mai 1920", v=  "Share of 20-39 years old" )
 plot40 <- function_gwr_plot(w="Jan 1920 - Mai 1920", v=  "Share of >= 60 years old" )
 
-map2 <- ggarrange(plot31, plot32, 
+map3 <- ggarrange(plot31, plot32, 
                   plot33, plot34,
                   plot35, plot36,
                   plot37, plot38,
@@ -522,15 +522,15 @@ map2 <- ggarrange(plot31, plot32,
                   align = 'h')
 
 
-text2 <- "September 1918 - May 1918"
+text3 <- "January 1920 - May 1920"
 
 # Create a text grob
-tgrob <- text_grob(text2,size = 40, family = "serif")
+tgrob <- text_grob(text3,size = 40, family = "serif")
 # Draw the text
 plot_0 <- as_ggplot(tgrob) + 
   theme(plot.margin = margin(0,0,-5,0, "cm"))
 
-ggarrange(plot_0 ,map2,
+ggarrange(plot_0 ,map3,
           ncol = 1,nrow = 2,heights = c(1,8))
 
 ggsave("figures/Figure_gwr_thirdwave.png",h=35,w=20)

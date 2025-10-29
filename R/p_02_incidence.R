@@ -1,10 +1,10 @@
 
 lwd_size <- 1.5
 lwd_size_vline <- 0.8
-text_size <- 25
+text_size <- 20
 text_size_heat_map <- 15
 legend_size <- 20
-axis_legend_size <- 25
+axis_legend_size <- 20
 axis_legend_size_heat_map <- 15
 title_size <- 20
 
@@ -40,8 +40,8 @@ dt_t <- dt %>%
 
 ggplot(dt_t) +
   geom_line(aes(y=inc_total ,x= Startdatum), lwd=lwd_size) +
-  scale_x_date(labels = date_format("%Y/%m/%d"), 
-               breaks = date_breaks("4 weeks")) +
+  scale_x_date(labels = date_format("%Y/%m"), 
+               breaks = date_breaks("1 months")) +
 
   # annotate("rect",xmin=ymd("1918-07-15"),xmax=ymd("1918-08-15"),ymin=-Inf,ymax=Inf,alpha=0.1,fill="black") +
   # annotate("rect",xmin=datlim3,xmax=datlim4,ymin=-Inf,ymax=Inf,alpha=0.1,fill="black") +
@@ -50,7 +50,7 @@ ggplot(dt_t) +
   # scale_color_manual(name = "",
   #                    label =c("City of Zurich","Canton Zurich"),
   #                    values = c(col_pal[1],  col_pal[4]))+
-  xlab("Week/Year")+
+  xlab("Month/Year")+
   ylab("per 10'000 inhab.")+
   # ggtitle("Incidence") +
   theme_bw()+
@@ -64,7 +64,7 @@ ggplot(dt_t) +
     legend.position = c(.62, .82),
     legend.key.size = unit(1.2, "cm"),
     legend.text=element_text(size=legend_size),
-    axis.text.x = element_text(size=size_axis_x,angle =45,hjust=1),
+    axis.text.x = element_text(size=size_axis_x,angle =30,hjust=1),
     axis.title = element_text(size=axis_legend_size),
     title =element_text(size=title_size))
 
@@ -104,9 +104,9 @@ ggplot(dt) +
     title =element_text(size=title_size))
 
 
-ggsave("figures/Figure_inc_canton.png",h=18,w=25)
+ggsave("figures/Figure_inc_canton.png",h=25,w=25)
 
-coeff<- 4
+coeff<- 4.2
 dt_mort <- readRDS("data/Switzerland_results_month_last_7_notrim.Rds") %>%
   filter(Year %in% c(1918:1920),
          Model %in% "Global Serfling (Stan, NB, last 7 no trim)") %>%
@@ -130,23 +130,29 @@ dt_m <- dt_t %>%
   left_join(dt_mort) %>%
   select(month_year, inc_month,exc_rel) %>%
   gather(., con, value, inc_month:exc_rel) %>%
-  filter(month_year < ymd("1920-05-01"))
+  filter( month_year > ymd("1918-06-01") & month_year < ymd("1920-05-01")) %>%
+  mutate(con= factor(con, levels = c("inc_month","exc_rel")))
 
 
 ggplot(dt_m) +
-  geom_bar(aes(x = month_year, y = value, col=con, fill=con), stat = "identity",  position = "dodge", linewidth = lwd_size) +
+  geom_bar(aes(x = month_year, y = value, col=con,  fill=con),
+           stat = "identity",  position = "dodge", linewidth = lwd_size) +
   scale_x_date(labels = date_format("%m/%y"), 
                breaks = date_breaks("1 month")) +
   scale_color_manual("",
-    labels=c("Incidence", "Excess Mortality"),
-    values= c(cbp1[2],cbp1[3])
-    )+
+                     breaks =  c("exc_rel","inc_month"),  
+                     labels=c( "Excess Mortality","Incidence"),
+                     values= col2)+
+  
   scale_fill_manual("",
-    labels=c("Incidence", "Excess Mortality"),
-    values= c(cbp1[2],cbp1[3]))+
+                    breaks =  c("exc_rel","inc_month"),  
+                    labels=c( "Excess Mortality","Incidence"),
+                    values= col2)+
   scale_y_continuous(
     name = "Incidence per 10'000",
     sec.axis = sec_axis(~./coeff, name = "Excess mortality")) +
+  guides(fill = guide_legend(reverse = TRUE),
+         col  = guide_legend(reverse = TRUE))+
   xlab("Month/Year")+
   theme_bw()+
   theme(
@@ -158,7 +164,7 @@ ggplot(dt_m) +
     legend.position = c(0.6, 0.8),
     legend.key.size = unit(1.2, "cm"),
     legend.text=element_text(size=legend_size),
-    axis.text.x = element_text(size=size_axis_x,angle =45,hjust=1),
+    axis.text.x = element_text(size=size_axis_x,angle =30,hjust=1),
     axis.title = element_text(size=axis_legend_size),
     title =element_text(size=title_size))
 

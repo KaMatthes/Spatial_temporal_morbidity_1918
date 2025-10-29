@@ -80,6 +80,9 @@ docs <-  read.xlsx("data/Aerzte1910.xlsx") %>%
   mutate(dens_doc = Doc_privat/area) %>%
   select(Bezirk, MapName, Doc_privat,Doc_spital,docs = Both, dens_doc) 
 
+write.xlsx( docs,"data/docs.xlsx", row.names=FALSE, overwrite = TRUE)
+
+
 dt_g <- read_sf("data/Polygonbasis_183/Polygonbasis_183_eli.shp") %>%
   rename(Bezirk = BEZNR,
          Bezirksname = BEZNA) %>%

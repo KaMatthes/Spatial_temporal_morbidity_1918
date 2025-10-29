@@ -17,6 +17,7 @@ library(MASS)
 library(classInt )
 library(boot)
 library(cowplot)
+library(ggpubr)
 
 
 conflict_prefer("select", "dplyr")
@@ -33,4 +34,6 @@ conflict_prefer("group_by", "dplyr")
 
 cbp1 <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#0072B2", "#D55E00", "#CC79A7")
 
-col_c  <- c("#FF0066","#7030A0","#1EA7C4" )
+col_c  <- c("#B078C0FF","#1EA7C4","#D36B8DFF")
+
+col2 <- c("#B078C0FF","#56B4E9")

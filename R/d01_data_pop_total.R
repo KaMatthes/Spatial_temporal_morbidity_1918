@@ -157,6 +157,9 @@ t1 <- dt3 %>%
     )
 table(t1$diff)
 
+dttt <- t1 %>%
+  filter(diff=="no")
+
 dt.pop <- read_excel_allsheets("data/Population.xlsx") %>%
   do.call(bind_rows, .) %>%
   mutate(Bezirk=as.character(Bezirk)) %>%
@@ -337,6 +340,7 @@ dt16r <- dt15 %>%
   filter(is.na(Cases_used3)) %>%
   select(year, Startdatum, Enddatum, Kanton, Bezirk, Bezirksname,iso_cw_y,Cases_Bezirk= Cases_Bezirk_new3,pop)
 
+
 dt17 <- dt15 %>%
   filter(!is.na(Cases_used3)) %>%
   mutate( cases_left3 = cases_left2 - Cases_used3) %>%
@@ -467,4 +471,9 @@ b <- dt_all %>%
   
 dtt1 <- dt_all %>%
   full_join(dt3) %>%
-  mutate(diff = Cases_Bezirk - Fallzahl_Kanton)
+  filter(Kanton_bigger==1,
+         fallzahl_gemeinde_bezirk>0) %>%
+  select(Cases_Bezirk,fallzahl_gemeinde_bezirk, Bezirk) %>%
+  mutate(diff = Cases_Bezirk - fallzahl_gemeinde_bezirk,
+         per = diff/fallzahl_gemeinde_bezirk) %>%
+  filter(fallzahl_gemeinde_bezirk==0)
