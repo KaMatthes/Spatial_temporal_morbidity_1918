@@ -1,3 +1,6 @@
+rm(list=ls())
+source("R/00_setup.R")
+
 function_inla_total <- function(Year_Pan,Year_max, Year_min) {
   dt <- read.xlsx("data/Death1913_1918.xlsx") %>%
     gather(., year, death, `1913`:`1918`) %>%

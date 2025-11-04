@@ -64,17 +64,12 @@ ds <- read_sf("data/Polygonbasis_183/Polygonbasis_183_eli.shp") %>%
 
 
 
-# w="Jan 1920 - May 1920"
-# v="Population density"
-# n_boot=2000
-# conf=0.95
+w="Jan 1920 - May 1920"
+v="Population density"
+n_boot=2000
+conf=0.95
 
 function_gwr_data <- function(w, v,n_boot, conf) {
-  
-  dp <- read_sf("data/Polygonbasis_183/Polygonbasis_183_eli.shp") 
-  
-  gnb <- poly2nb(dp)
-  glw  <- nb2listw(gnb)
   
   dt <- ds %>%
   mutate(
@@ -228,6 +223,8 @@ ggsave("figures/Figure4.pdf",h=15,w=18)
 
 
 function_gwr_plot <- function(w, v) {
+  
+  
   
   dt <- ds %>%
     mutate(
@@ -388,5 +385,55 @@ ggsave("figures/Figure_gwr_thirdwave.png",h=35,w=20)
 
 
 
+# write data
+
+function_gwr_write <- function(w, v) {
+  
+  dt <- ds %>%
+    mutate(
+      Bezirk = as.numeric(Bezirk),
+    ) %>%
+    filter(wave_name==w,
+           Cofac_name== v) %>%
+    as(. , "Spatial")
+  
+  bw <- bw.gwr(formula =incidence~ value,
+               approach = "AICc",
+               kernel="gaussian",
+               adaptive= T,
+               data = dt) 
+  
+  gwr.mod <- gwr.robust(formula =incidence~ value,
+                        adaptive = T,
+                        data = dt,
+                        bw = bw)
+
+  dp <- read_sf("data/Polygonbasis_183/Polygonbasis_183_eli.shp") 
+  # get results and CI from GWR with bootstrapping
+ res <- gwr.mod$SDF %>%
+   st_as_sf(.) %>%
+   st_join(dp) %>%
+   as.data.frame() %>%
+   mutate(    Cofactor = v, 
+              wave = w) %>%
+   select(Cofactor, wave, Bezirk=BEZNR, value)
+}
 
 
+dat.a <-list()
+
+h <- 0L 
+for( w in unique(ds$wave_name)) {
+  print(w)
+  for( v in unique(ds$Cofac_name)) {
+    print(v)
+    h  <- h + 1L
+    dat.a[[h]] <- function_gwr_write(w, v)
+    
+  }
+}
+
+
+dtt<- do.call(rbind,dat.a)
+
+write.xlsx(dtt, "output/gwr_results.xlsx")
