@@ -150,7 +150,7 @@ ggplot(dtt, aes(x=factor(Cofactor,
     title =element_text(size=title_size))+
   coord_flip()
 
-ggsave("figures/Figure5.png",h=15,w=18)
+# ggsave("figures/Figure5.png",h=15,w=18)
 ggsave("figures/Figure5.pdf",h=15,w=18)
 
 # save data

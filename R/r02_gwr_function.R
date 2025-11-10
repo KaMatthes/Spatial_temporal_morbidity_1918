@@ -309,8 +309,9 @@ plot_0 <- as_ggplot(tgrob) +
 
 ggarrange(plot_0 ,map1,
           ncol = 1,nrow = 2,heights = c(1,8))
-ggsave("figures/Figure_gwr_firstwave.png",h=35,w=20)
+# ggsave("figures/Figure_gwr_firstwave.png",h=35,w=20)
 
+ggsave("figures/Figure_S7.pdf",h=35,w=20)
 # second wave
 
 plot21 <- function_gwr_plot(w= "Sep 1918 - May 1919", v="Population density")
@@ -344,9 +345,9 @@ plot_0 <- as_ggplot(tgrob) +
 ggarrange(plot_0 ,map2,
           ncol = 1,nrow = 2,heights = c(1,8))
 
-ggsave("figures/Figure_gwr_secondwave.png",h=35,w=20)
+# ggsave("figures/Figure_gwr_secondwave.png",h=35,w=20)
 
-
+ggsave("figures/Figure_S8.pdf",h=35,w=20)
 
 # third wave
 
@@ -381,9 +382,9 @@ plot_0 <- as_ggplot(tgrob) +
 ggarrange(plot_0 ,map3,
           ncol = 1,nrow = 2,heights = c(1,8))
 
-ggsave("figures/Figure_gwr_thirdwave.png",h=35,w=20)
+# ggsave("figures/Figure_gwr_thirdwave.png",h=35,w=20)
 
-
+ggsave("figures/Figure_S9.pdf",h=35,w=20)
 
 # write data
 
