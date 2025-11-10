@@ -10,7 +10,7 @@ Sofie Jörg, Rick J Mourits, Katarina L Matthes
 
 The data is public available via Zenodo:
 <br >
-[![DOI](https://doi.org/10.5281/zenodo.17508352)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17508352.svg)](https://doi.org/10.5281/zenodo.17508352)
 <br >
 
 [![CC BY-NC-SA 4.0][cc-by-nc-sa-image]][cc-by-nc-sa]
