@@ -1,3 +1,5 @@
+rm(list=ls())
+source("R/00_setup.R")
 
 lwd_size <- 1.5
 lwd_size_vline <- 0.8
@@ -71,6 +73,7 @@ ggplot(dt_t) +
 
 # ggsave("figures/Figure_inc.png",h=10,w=18)
 ggsave("figures/Figure_S5.pdf",h=10,w=18)
+ggsave("figures/Figure_S5t.png",h=10,w=18)
 
 ggplot(dt) +
   geom_line(aes(y=  inc_canton,x= Report_start), lwd=lwd_size) +
@@ -105,6 +108,7 @@ ggplot(dt) +
 
 
 # ggsave("figures/Figure_inc_canton.png",h=25,w=25)
+ggsave("figures/Figure_S6t.png",h=25,w=25)
 ggsave("figures/Figure_S6.pdf",h=25,w=25)
 
 coeff<- 4.2
@@ -170,5 +174,6 @@ ggplot(dt_m) +
     title =element_text(size=title_size))
 
 # ggsave("figures/Figure_inc_excess.png",h=10,w=18)
+ggsave("figures/Figure_S10.png",h=10,w=18)
 ggsave("figures/Figure_S10.pdf",h=10,w=18)
 
