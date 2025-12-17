@@ -1,4 +1,4 @@
-# 	Spatiotemporal Dynamics and Determinants of Influenza Incidence in Swiss Districts during the 1918-1920 Pandemic
+# 	How the 1918–1920 Influenza Pandemic Spread Across Switzerland - Spatial Patterns and Determinants of Incidence and Mortalityc
 
 ## Paper
 
