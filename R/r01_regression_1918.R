@@ -152,6 +152,7 @@ ggplot(dtt, aes(x=factor(Cofactor,
 
 # ggsave("figures/Figure5.png",h=15,w=18)
 ggsave("figures/Figure5.pdf",h=15,w=18)
+ggsave("figures/Figure5.png", dpi = 600,h=15,w=18)
 
 # save data
 

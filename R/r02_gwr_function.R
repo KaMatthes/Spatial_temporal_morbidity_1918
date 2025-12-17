@@ -215,7 +215,7 @@ ggplot(dtt, aes(x=factor(Cofactor,
   coord_flip()
 
 ggsave("figures/Figure4.pdf",h=15,w=18)
-# ggsave("figures/Figure4.png",h=15,w=18)
+ggsave("figures/Figure4.png", dpi = 600,h=15,w=18)
 
 #################
 # Maps for GWR  #
