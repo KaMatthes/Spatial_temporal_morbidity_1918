@@ -1,10 +1,12 @@
 # 	How the 1918–1920 Influenza Pandemic Spread Across Switzerland - Spatial Patterns and Determinants of Incidence and Mortalityc
 
-## Paper
+## Paper 
 
 <br >
 Sofie Jörg, Rick J Mourits, Katarina L Matthes
 <br >
+ <i> medRxiv </i> 
+https://doi.org/10.64898/2025.12.15.25342287
 
 ## Data
 
