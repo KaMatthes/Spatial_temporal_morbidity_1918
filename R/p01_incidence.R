@@ -41,7 +41,9 @@ dt_t <- dt %>%
   distinct(Report_start, .keep_all = TRUE) 
 
 ggplot(dt_t) +
-  geom_line(aes(y=inc_total ,x= Report_start), lwd=lwd_size) +
+  geom_bar(aes(x =  Report_start, y = inc_total),
+           stat = "identity",  position = "dodge", linewidth = lwd_size) +
+  # geom_line(aes(y=inc_total ,x= Report_start), lwd=lwd_size) +
   scale_x_date(labels = date_format("%Y/%m"), 
                breaks = date_breaks("1 months")) +
 
@@ -53,7 +55,7 @@ ggplot(dt_t) +
   #                    label =c("City of Zurich","Canton Zurich"),
   #                    values = c(col_pal[1],  col_pal[4]))+
   xlab("Month/Year")+
-  ylab("per 10'000 inhab.")+
+  ylab("Incidence per 10'000")+
   # ggtitle("Incidence") +
   theme_bw()+
   #theme_light(base_size = 16)+
@@ -72,11 +74,10 @@ ggplot(dt_t) +
 
 
 # ggsave("figures/Figure_inc.png",h=10,w=18)
-ggsave("figures/Figure_S5.pdf",h=10,w=18)
-ggsave("figures/Figure_S5t.png",h=10,w=18)
+ggsave("figures/Figure_S5.pdf",h=10,w=20)
+ggsave("figures/Figure_S5t.png",h=10,w=20)
 
-ggplot(dt) +
-  geom_line(aes(y=  inc_canton,x= Report_start), lwd=lwd_size) +
+ggplot(dt) +  geom_line(aes(y=  inc_canton,x= Report_start), lwd=lwd_size) +
   facet_wrap(~Canton, ncol=5) +
   scale_x_date(labels = date_format("%m/%y"), 
                breaks = date_breaks("4 month")) +
@@ -89,7 +90,7 @@ ggplot(dt) +
   #                    label =c("City of Zurich","Canton Zurich"),
   #                    values = c(col_pal[1],  col_pal[4]))+
   xlab("Month/Year")+
-  ylab("per 10'000 inhab.")+
+  ylab("Incidence per 10'000")+
   # ggtitle("Incidence") +
   theme_bw()+
   #theme_light(base_size = 16)+
@@ -174,6 +175,6 @@ ggplot(dt_m) +
     title =element_text(size=title_size))
 
 # ggsave("figures/Figure_inc_excess.png",h=10,w=18)
-ggsave("figures/Figure_S10.png",h=10,w=18)
-ggsave("figures/Figure_S10.pdf",h=10,w=18)
+ggsave("figures/Figure_S10.png",h=10,w=20)
+ggsave("figures/Figure_S10.pdf",h=10,w=20)
 
