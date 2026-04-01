@@ -74,8 +74,8 @@ ggplot(dt_t) +
 
 
 # ggsave("figures/Figure_inc.png",h=10,w=18)
-ggsave("figures/Figure_S5.pdf",h=10,w=20)
-ggsave("figures/Figure_S5t.png",h=10,w=20)
+ggsave("figures/Figure4_new.pdf",h=10,w=20)
+ggsave("figures/Figure4.png",h=10,w=20)
 
 ggplot(dt) +  geom_line(aes(y=  inc_canton,x= Report_start), lwd=lwd_size) +
   facet_wrap(~Canton, ncol=5) +
@@ -109,8 +109,8 @@ ggplot(dt) +  geom_line(aes(y=  inc_canton,x= Report_start), lwd=lwd_size) +
 
 
 # ggsave("figures/Figure_inc_canton.png",h=25,w=25)
-ggsave("figures/Figure_S6t.png",h=25,w=25)
-ggsave("figures/Figure_S6.pdf",h=25,w=25)
+ggsave("figures/Figure_6_new.png",h=25,w=25)
+ggsave("figures/Figure_6_new.pdf",h=25,w=25)
 
 coeff<- 4.2
 dt_mort <- readRDS("data/Switzerland_results_month_last_7_notrim.Rds") %>%
@@ -176,5 +176,5 @@ ggplot(dt_m) +
 
 # ggsave("figures/Figure_inc_excess.png",h=10,w=18)
 ggsave("figures/Figure_S10.png",h=10,w=20)
-ggsave("figures/Figure_S10.pdf",h=10,w=20)
+ggsave("figures/Figure_5new.pdf",h=10,w=20)
 
