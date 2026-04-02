@@ -305,14 +305,14 @@ text1 <- "July 1918 - August 1918"
 tgrob <- text_grob(text1,size = 40, family = "serif")
 # Draw the text
 plot_0 <- as_ggplot(tgrob) + 
-  theme(plot.margin = margin(0,0,-5,0, "cm"))
+  theme(plot.margin = margin(0,0,-6,0, "cm"))
 
 ggarrange(plot_0 ,map1,
           ncol = 1,nrow = 2,heights = c(1,8))
 # ggsave("figures/Figure_gwr_firstwave.png",h=35,w=20)
 
 ggsave("figures/Figure_S7.png",h=35,w=20)
-ggsave("figures/Figure_S7.pdf",h=35,w=20)
+ggsave("figures/Figure_12_2.pdf",h=30,w=15)
 # second wave
 
 plot21 <- function_gwr_plot(w= "Sep 1918 - May 1919", v="Population density")
@@ -341,14 +341,14 @@ text2 <- "September 1918 - May 1919"
 tgrob <- text_grob(text2,size = 40, family = "serif")
 # Draw the text
 plot_0 <- as_ggplot(tgrob) + 
-  theme(plot.margin = margin(0,0,-5,0, "cm"))
+  theme(plot.margin = margin(0,0,-6,0, "cm"))
 
 ggarrange(plot_0 ,map2,
           ncol = 1,nrow = 2,heights = c(1,8))
 
 # ggsave("figures/Figure_gwr_secondwave.png",h=35,w=20)
 
-ggsave("figures/Figure_S8.pdf",h=35,w=20)
+ggsave("figures/Figure_13_2.pdf",h=30,w=15)
 
 ggsave("figures/Figure_S8.png",h=35,w=20)
 
@@ -380,7 +380,7 @@ text3 <- "January 1920 - May 1920"
 tgrob <- text_grob(text3,size = 40, family = "serif")
 # Draw the text
 plot_0 <- as_ggplot(tgrob) + 
-  theme(plot.margin = margin(0,0,-5,0, "cm"))
+  theme(plot.margin = margin(0,0,-6,0, "cm"))
 
 ggarrange(plot_0 ,map3,
           ncol = 1,nrow = 2,heights = c(1,8))
@@ -389,7 +389,7 @@ ggarrange(plot_0 ,map3,
 
 ggsave("figures/Figure_S9.png",h=35,w=20)
 
-ggsave("figures/Figure_S9.pdf",h=35,w=20)
+ggsave("figures/Figure_14_2.pdf",h=30,w=15)
 
 # write data
 
