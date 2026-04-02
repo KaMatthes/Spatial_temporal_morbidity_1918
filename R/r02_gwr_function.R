@@ -264,10 +264,11 @@ function_gwr_plot <- function(w, v) {
     theme_bw()+
     theme(
       text = element_text(family = "serif", colour ="black"),
-      plot.title = element_text(size = 30,  hjust = 0, vjust = 1),
-      legend.position = c(0.1, 0.8),
+      plot.title = element_text(size = 10,  hjust = 0, vjust = 1),
+      legend.position = c(0.1, 0.78),
       legend.title = element_text(color = "black"),
-      legend.text=element_text(size=20),
+      legend.key.size = unit(0.15, "cm"),
+      legend.text=element_text(size=6),
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
       axis.text = element_blank(),
@@ -302,17 +303,22 @@ map1 <- ggarrange(plot11, plot12,
 text1 <- "July 1918 - August 1918"
 
 # Create a text grob
-tgrob <- text_grob(text1,size = 40, family = "serif")
+tgrob <- text_grob(text1,size = 10, family = "serif", face = "bold")
 # Draw the text
 plot_0 <- as_ggplot(tgrob) + 
-  theme(plot.margin = margin(0,0,-6,0, "cm"))
+  theme(plot.margin = margin(0,0,-2.8,0, "cm"))
 
 ggarrange(plot_0 ,map1,
           ncol = 1,nrow = 2,heights = c(1,8))
 # ggsave("figures/Figure_gwr_firstwave.png",h=35,w=20)
 
-ggsave("figures/Figure_S7.png",h=35,w=20)
-ggsave("figures/Figure_12_2.pdf",h=30,w=15)
+# 
+# ggsave("plot.pdf", height = 29.7, width = 21, units = "cm")
+# 
+# ggsave("figures/Figure_S7.png",h=35,w=20)
+ggsave("figures/Figure_12_2.pdf",height = 29.7, width = 15, units = "cm")
+
+
 # second wave
 
 plot21 <- function_gwr_plot(w= "Sep 1918 - May 1919", v="Population density")
@@ -338,19 +344,18 @@ map2 <- ggarrange(plot21, plot22,
 text2 <- "September 1918 - May 1919"
 
 # Create a text grob
-tgrob <- text_grob(text2,size = 40, family = "serif")
+tgrob <- text_grob(text2,size = 10, family = "serif", face = "bold")
 # Draw the text
 plot_0 <- as_ggplot(tgrob) + 
-  theme(plot.margin = margin(0,0,-6,0, "cm"))
+  theme(plot.margin = margin(0,0,-2.8,0, "cm"))
 
 ggarrange(plot_0 ,map2,
           ncol = 1,nrow = 2,heights = c(1,8))
-
 # ggsave("figures/Figure_gwr_secondwave.png",h=35,w=20)
 
-ggsave("figures/Figure_13_2.pdf",h=30,w=15)
+ggsave("figures/Figure_13_2.pdf",height = 29.7, width = 15, units = "cm")
 
-ggsave("figures/Figure_S8.png",h=35,w=20)
+# ggsave("figures/Figure_S8.png",h=35,w=20)
 
 # third wave
 
@@ -377,19 +382,19 @@ map3 <- ggarrange(plot31, plot32,
 text3 <- "January 1920 - May 1920"
 
 # Create a text grob
-tgrob <- text_grob(text3,size = 40, family = "serif")
+tgrob <- text_grob(text3,size = 10, family = "serif", face = "bold")
 # Draw the text
 plot_0 <- as_ggplot(tgrob) + 
-  theme(plot.margin = margin(0,0,-6,0, "cm"))
+  theme(plot.margin = margin(0,0,-2.8,0, "cm"))
 
 ggarrange(plot_0 ,map3,
           ncol = 1,nrow = 2,heights = c(1,8))
 
 # ggsave("figures/Figure_gwr_thirdwave.png",h=35,w=20)
 
-ggsave("figures/Figure_S9.png",h=35,w=20)
+# ggsave("figures/Figure_S9.png",h=35,w=20)
 
-ggsave("figures/Figure_14_2.pdf",h=30,w=15)
+ggsave("figures/Figure_14_2.pdf",height = 29.7, width = 15, units = "cm")
 
 # write data
 
