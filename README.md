@@ -1,9 +1,9 @@
-# 	How the 1918–1920 Influenza Pandemic Spread Across Switzerland - Spatial Patterns and Determinants of Incidence and Mortalityc
+# 	Beyond Mortality: The Importance of Morbidity Data for Understanding Pandemics - The Case of the 1918–1920 Influenza Pandemic in Switzerland
 
 ## Paper 
 
 <br >
-Sofie Jörg, Rick J Mourits, Katarina L Matthes
+ Katarina L Matthes, Sofie Jörg, Rick J Mourits
 <br >
  <i> medRxiv </i> 
 https://doi.org/10.64898/2025.12.15.25342287
